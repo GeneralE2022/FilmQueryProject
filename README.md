@@ -2,7 +2,7 @@
 
 Film Query Project 
 
-### Week 6 Homework for Skill Distillery 
+### Week 7 Homework for Skill Distillery 
 
 ## Overview 
 

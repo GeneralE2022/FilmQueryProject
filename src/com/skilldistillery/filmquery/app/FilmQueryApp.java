@@ -5,7 +5,6 @@ import java.util.Scanner;
 
 import com.skilldistillery.filmquery.database.DatabaseAccessor;
 import com.skilldistillery.filmquery.database.DatabaseAccessorObject;
-import com.skilldistillery.filmquery.entities.Film;
 
 public class FilmQueryApp {
 
@@ -17,30 +16,44 @@ public class FilmQueryApp {
 
 	public static void main(String[] args) throws SQLException, ClassNotFoundException {
 		FilmQueryApp app = new FilmQueryApp();
-//		app.test();
-		app.displayData(app.getUserInput());
+		app.displayMenu();
 	}
 
-	private void test() {
-		Film film = db.findFilmById(1);
-		System.out.println(film);
-	}
-
-	private int getUserInput() {
+	private void displayMenu() {
 		Scanner sc = new Scanner(System.in);
 		int input = 0;
-		System.out.print("1. Enter an actor's ID to display it's data ");
+		System.out.println("(1) Look up a film by its id.");
+		System.out.println("(2) Look up a film by a search keyword.");
+		System.out.println("(3) Exit the application.");
 		input = sc.nextInt();
-		sc.close();
-		return input;
+
+		switch (input) {
+		case 1:
+			int filmInput = 0;
+			System.out.println("Enter a film id to look up.");
+			filmInput = sc.nextInt();
+			menuOne(input);
+			break;
+
+		case 2:
+			String filmKeyword = "";
+			System.out.println("Enter a search keyword.");
+			menuTwo(filmKeyword);
+			break;
+
+		default:
+			break;
+		}
 	}
 
-	public void displayData(int input) {
-		DatabaseAccessorObject databaseAccessorObject = new DatabaseAccessorObject();
-//		System.out.println(databaseAccessorObject.findFilmById(input));
-		System.out.println(databaseAccessorObject.findFilmsByActorId(input));
-
+	public void menuOne(int input) {
+		System.out.println(db.findFilmById(input));
 	}
+
+	public void menuTwo(String keyword) {
+		db.findFilmByKeyword();
+	}
+
 
 	static {
 		try {

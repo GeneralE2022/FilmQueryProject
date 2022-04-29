@@ -19,6 +19,7 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 
 	@Override
 	public Film findFilmById(int filmId) {
+
 		Film film = null;
 		try {
 			Connection conn = DriverManager.getConnection(url, user, pass);
@@ -42,6 +43,32 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 		}
 		return film;
 	}
+
+	public Film findFilmByKeyword(String keyword) {
+		Film film = null;
+		try {
+			Connection conn = DriverManager.getConnection(url, user, pass);
+			String sql = "SELECT id, title, description FROM film WHERE id = ?";
+			PreparedStatement stmt = conn.prepareStatement(sql);
+			stmt.setString(1, keyword);
+			ResultSet rs = stmt.executeQuery();
+			if (rs.next()) {
+				film = new Film(); // Create the object
+				// Here is our mapping of query columns to our object fields:
+				film.setId(rs.getInt("id"));
+				film.setTitle(rs.getString("title"));
+				film.setDesc(rs.getString("description"));
+			}
+			rs.close();
+			stmt.close();
+			conn.close();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return film;
+	}
+
 
 	@Override
 	public Actor findActorById(int actorId) {
@@ -79,9 +106,11 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 					+ " FROM film JOIN film_actor ON film.id = film_actor.film_id " + " WHERE actor_id = ?";
 			PreparedStatement stmt = conn.prepareStatement(sql);
 			stmt.setInt(1, actorId);
+			StringBuilder sb = new StringBuilder();
 			ResultSet rs = stmt.executeQuery();
 			while (rs.next()) {
-				int filmId = rs.getInt(1);
+				sb.append(rs.getInt(1));
+				sb.append(": ");
 				String title = rs.getString(2);
 				String desc = rs.getString(3);
 				short releaseYear = rs.getShort(4);
