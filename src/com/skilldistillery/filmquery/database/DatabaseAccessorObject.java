@@ -17,7 +17,7 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 	String user = "student";
 	String pass = "student";
 
-	// Menu option 1, display error if film id not present
+	// Menu option 1
 	@Override
 	public Film findFilmById(int filmId) {
 		Film film = null;
@@ -36,9 +36,6 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 				film.setDesc(rs.getString("description"));
 				film.setLanguage(rs.getString("name"));
 			}
-			if (film == null) {
-				System.out.println("Your movie was not found in our database, please enter a different film id.");
-			}
 
 			rs.close();
 			stmt.close();
@@ -52,21 +49,30 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 
 	// Menu option 2
 	@Override
-	public Film findFilmByKeyword(String keyword) {
+	public List<Film> findFilmByKeyword(String keyword) {
+		List<Film> filmList = new ArrayList<>();
 		Film film = null;
 		try {
 			Connection conn = DriverManager.getConnection(url, user, pass);
-			String sql = "SELECT id, title, description FROM film WHERE id = ?";
+
+			String sql = "select id, title, rating, description \n" + "from film "
+					+ "where title like ? or description like ?";
 			PreparedStatement stmt = conn.prepareStatement(sql);
-			stmt.setString(1, keyword);
+			stmt.setString(1, "%" + keyword + "%");
+			stmt.setString(2, "%" + keyword + "%");
 			ResultSet rs = stmt.executeQuery();
-			if (rs.next()) {
-				film = new Film(); // Create the object
+
+			while (rs.next()) {
+				film = new Film();
 				// Here is our mapping of query columns to our object fields:
 				film.setId(rs.getInt("id"));
 				film.setTitle(rs.getString("title"));
+				film.setRating(rs.getString("rating"));
 				film.setDesc(rs.getString("description"));
+//				film.setLanguage(rs.getString("name"));
+				filmList.add(film);
 			}
+
 			rs.close();
 			stmt.close();
 			conn.close();
@@ -74,7 +80,7 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		return film;
+		return filmList;
 	}
 
 

@@ -1,10 +1,12 @@
 package com.skilldistillery.filmquery.app;
 
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Scanner;
 
 import com.skilldistillery.filmquery.database.DatabaseAccessor;
 import com.skilldistillery.filmquery.database.DatabaseAccessorObject;
+import com.skilldistillery.filmquery.entities.Film;
 
 public class FilmQueryApp {
 
@@ -42,7 +44,8 @@ public class FilmQueryApp {
 
 			case 2:
 				String filmKeyword = "";
-				System.out.println("Enter a search keyword.");
+				System.out.println("Search our movie titles by keyword: ");
+				filmKeyword = sc.next();
 				menuTwo(filmKeyword);
 				break;
 
@@ -53,11 +56,19 @@ public class FilmQueryApp {
 	}
 
 	public void menuOne(int filmInput) {
-		System.out.println(db.findFilmById(filmInput));
+		Film film = db.findFilmById(filmInput);
+		if (film == null) {
+			System.out.println("Your movie was not found in our database, please enter a different film id.");
+		} else {
+			System.out.println(film);
+		}
 	}
 
 	public void menuTwo(String keyword) {
-		db.findFilmByKeyword(keyword);
+		List<Film> printableFilms = db.findFilmByKeyword(keyword);
+		for (Film film : printableFilms) {
+			System.out.println(film);
+		}
 	}
 
 
