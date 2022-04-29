@@ -23,7 +23,12 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 		Film film = null;
 		try {
 			Connection conn = DriverManager.getConnection(url, user, pass);
-			String sql = "select film.id, film.title, film.rating, film.description, language.name from film join language on film.language_id = language.id WHERE film.id = ?";
+
+			String sql = "select f.id, f.title, f.rating, f.description, l.name, a.first_name, a.last_name \n"
+					+ "FROM film f   JOIN film_actor fa ON fa.actor_id = f.id\n"
+					+ "              JOIN actor a ON a.id = fa.film_id \n"
+					+ "              JOIN language l ON l.id = f.language_id where f.id = ?";
+
 			PreparedStatement stmt = conn.prepareStatement(sql);
 			stmt.setInt(1, filmId);
 			ResultSet rs = stmt.executeQuery();
@@ -35,6 +40,8 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 				film.setRating(rs.getString("rating"));
 				film.setDesc(rs.getString("description"));
 				film.setLanguage(rs.getString("name"));
+				film.setActors(rs.getString("first_name" + " " + "last_name"));
+				film.setActors(null);
 			}
 
 			rs.close();
@@ -55,8 +62,14 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 		try {
 			Connection conn = DriverManager.getConnection(url, user, pass);
 
-			String sql = "select id, title, rating, description \n" + "from film "
-					+ "where title like ? or description like ?";
+//			String sql = "select id, title, rating, description \n" + "from film "
+//					+ "where title like ? or description like ?";
+
+			String sql = "select f.id, f.title, f.rating, f.description, l.name, a.first_name, a.last_name \n"
+					+ "FROM film f   JOIN film_actor fa ON fa.actor_id = f.id\n"
+					+ "              JOIN actor a ON a.id = fa.film_id \n"
+					+ "              JOIN language l ON l.id = f.language_id where f.title like ? or f.description like ?";
+
 			PreparedStatement stmt = conn.prepareStatement(sql);
 			stmt.setString(1, "%" + keyword + "%");
 			stmt.setString(2, "%" + keyword + "%");
