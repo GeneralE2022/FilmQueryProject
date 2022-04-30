@@ -7,16 +7,6 @@ public class Actor {
 	private int id;
 	private String firstName;
 	private String lastName;
-//	private List<Film> films;
-
-//	public List<Film> getFilms() {
-//		return films;
-//	}
-//
-//
-//	public void setFilms(List<Film> films) {
-//		this.films = films;
-//	}
 
 
 	public Actor(int id, String firstName, String lastName) {
@@ -25,13 +15,6 @@ public class Actor {
 		this.firstName = firstName;
 		this.lastName = lastName;
 	}
-
-
-	@Override
-	public String toString() {
-		return "Actor [id=" + id + ", firstName=" + firstName + ", lastName=" + lastName + "]";
-	}
-
 
 	@Override
 	public int hashCode() {
@@ -83,6 +66,11 @@ public class Actor {
 
 	public void setLastName(String lastName) {
 		this.lastName = lastName;
+	}
+
+	@Override
+	public String toString() {
+		return "Actor id: " + id + ", Name: " + firstName + " " + lastName;
 	}
 
 }

@@ -39,13 +39,9 @@ public class Film {
 	}
 
 
-
 	public Film() {
 		// TODO Auto-generated constructor stub
 	}
-
-
-
 
 
 	public int getId() {
@@ -58,13 +54,9 @@ public class Film {
 	}
 
 
-
-
 	public String getTitle() {
 		return title;
 	}
-
-
 
 
 	public void setTitle(String title) {
@@ -72,13 +64,9 @@ public class Film {
 	}
 
 
-
-
 	public String getDesc() {
 		return desc;
 	}
-
-
 
 
 	public void setDesc(String desc) {
@@ -86,13 +74,9 @@ public class Film {
 	}
 
 
-
-
 	public Integer getReleaseYear() {
 		return releaseYear;
 	}
-
-
 
 
 	public void setReleaseYear(Integer releaseYear) {
@@ -100,13 +84,9 @@ public class Film {
 	}
 
 
-
-
 	public int getLangId() {
 		return langId;
 	}
-
-
 
 
 	public void setLangId(int langId) {
@@ -114,13 +94,9 @@ public class Film {
 	}
 
 
-
-
 	public int getRentDur() {
 		return rentDur;
 	}
-
-
 
 
 	public void setRentDur(int rentDur) {
@@ -128,13 +104,9 @@ public class Film {
 	}
 
 
-
-
 	public double getRate() {
 		return rate;
 	}
-
-
 
 
 	public void setRate(double rate) {
@@ -142,13 +114,9 @@ public class Film {
 	}
 
 
-
-
 	public Integer getLength() {
 		return length;
 	}
-
-
 
 
 	public void setLength(Integer length) {
@@ -156,13 +124,9 @@ public class Film {
 	}
 
 
-
-
 	public double getRepCost() {
 		return repCost;
 	}
-
-
 
 
 	public void setRepCost(double repCost) {
@@ -170,13 +134,9 @@ public class Film {
 	}
 
 
-
-
 	public String getRating() {
 		return rating;
 	}
-
-
 
 
 	public void setRating(String rating) {
@@ -184,13 +144,9 @@ public class Film {
 	}
 
 
-
-
 	public String getFeatures() {
 		return features;
 	}
-
-
 
 
 	public void setFeatures(String features) {
@@ -198,13 +154,9 @@ public class Film {
 	}
 
 
-
-
 	public String getLanguage() {
 		return language;
 	}
-
-
 
 
 	public void setLanguage(String language) {
@@ -212,13 +164,9 @@ public class Film {
 	}
 
 
-
-
 	public List<Actor> getActors() {
 		return actors;
 	}
-
-
 
 
 	public void setActors(List<Actor> actors) {
@@ -226,15 +174,11 @@ public class Film {
 	}
 
 
-
-
 	@Override
 	public int hashCode() {
 		return Objects.hash(actors, desc, features, id, langId, language, length, rate, rating, releaseYear, rentDur,
 				repCost, title);
 	}
-
-
 
 	@Override
 	public boolean equals(Object obj) {
@@ -255,12 +199,11 @@ public class Film {
 				&& Objects.equals(title, other.title);
 	}
 
-
 	@Override
 	public String toString() {
-		return "Film id=" + id + ", title=" + title + ", desc=" + desc + ", releaseYear=" + releaseYear + ", langId="
-				+ langId + ", rentDur=" + rentDur + ", rate=" + rate + ", length=" + length + ", repCost=" + repCost
-				+ ", rating=" + rating + ", features=" + features + ", language=" + language + ", actors=" + actors;
+		return "Film id: " + id + ", Title: " + title + ", Description: " + desc + "\n" + "Released: " + releaseYear
+				+ ", Rating: " + rating + ", Features: " + features + ", Language(s): " + language + "\n" + "Cast: "
+				+ actors + "\n";
 	}
 }
 

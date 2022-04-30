@@ -51,7 +51,7 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 		return film;
 	}
 
-	// Add cast to selected film
+	// Add cast to selected film(s)
 	@Override
 	public List<Actor> findActorsByFilmId(int filmId) {
 		List<Actor> actors = new ArrayList<>();
@@ -80,16 +80,13 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 		return actors;
 	}
 
-	// Menu option 2 WORKING
+	// Menu option 2
 	@Override
 	public List<Film> findFilmByKeyword(String keyword) {
 		List<Film> filmList = new ArrayList<>();
 		Film film = null;
 		try {
 			Connection conn = DriverManager.getConnection(url, user, pass);
-
-//			String sql = "select id, title, rating, description \n" + "from film "
-//					+ "where title like ? or description like ?";
 
 			String sql = "select f.id, f.title, f.rating, f.description, l.name, a.first_name, a.last_name \n"
 					+ "FROM film f   JOIN film_actor fa ON fa.actor_id = f.id\n"
@@ -108,7 +105,8 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 				film.setTitle(rs.getString("title"));
 				film.setRating(rs.getString("rating"));
 				film.setDesc(rs.getString("description"));
-//				film.setLanguage(rs.getString("name"));
+				int id = film.getId();
+				film.setActors(findActorsByFilmId(id));
 				filmList.add(film);
 			}
 
