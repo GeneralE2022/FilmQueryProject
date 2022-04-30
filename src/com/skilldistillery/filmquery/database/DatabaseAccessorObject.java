@@ -24,15 +24,13 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 		try {
 			Connection conn = DriverManager.getConnection(url, user, pass);
 
-			String sql = "select f.id, f.title, f.rating, f.description, l.name, a.first_name, a.last_name \n"
-					+ "FROM film f   JOIN film_actor fa ON fa.actor_id = f.id\n"
-					+ "              JOIN actor a ON a.id = fa.film_id \n"
-					+ "              JOIN language l ON l.id = f.language_id where f.id = ?";
+			String sql = "select f.id, f.title, f.rating, f.description, l.name \n"
+					+ "FROM film f JOIN language l ON l.id = f.language_id where f.id = ?";
 
 			PreparedStatement stmt = conn.prepareStatement(sql);
 			stmt.setInt(1, filmId);
 			ResultSet rs = stmt.executeQuery();
-			if (rs.next()) {
+			while (rs.next()) {
 				film = new Film();
 				// Here is our mapping of query columns to our object fields:
 				film.setId(filmId);
@@ -40,8 +38,7 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 				film.setRating(rs.getString("rating"));
 				film.setDesc(rs.getString("description"));
 				film.setLanguage(rs.getString("name"));
-				film.setActors(rs.getString("first_name" + " " + "last_name"));
-				film.setActors(null);
+				film.setActors(findActorsByFilmId(filmId));
 			}
 
 			rs.close();
@@ -54,7 +51,36 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 		return film;
 	}
 
-	// Menu option 2
+	// Add cast to selected film
+	@Override
+	public List<Actor> findActorsByFilmId(int filmId) {
+		List<Actor> actors = new ArrayList<>();
+		try {
+			Connection conn = DriverManager.getConnection(url, user, pass);
+			String sql = "SELECT actor.id, actor.first_name, actor.last_name \n"
+					+ "FROM film_actor  JOIN film ON film.id = film_actor.film_id\n"
+					+ "          		JOIN actor on film_actor.actor_id = actor.id where film.id = ?";
+			PreparedStatement stmt = conn.prepareStatement(sql);
+			stmt.setInt(1, filmId);
+			ResultSet rs = stmt.executeQuery();
+			while (rs.next()) {
+				int id = rs.getInt(1);
+				String first_name = rs.getString(2);
+				String last_name = rs.getString(3);
+
+				Actor actor = new Actor(id, first_name, last_name);
+				actors.add(actor);
+			}
+			rs.close();
+			stmt.close();
+			conn.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return actors;
+	}
+
+	// Menu option 2 WORKING
 	@Override
 	public List<Film> findFilmByKeyword(String keyword) {
 		List<Film> filmList = new ArrayList<>();
@@ -95,72 +121,4 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 		}
 		return filmList;
 	}
-
-
-//	public List<Film> findFilmsByActorId(int actorId) {
-//		List<Film> films = new ArrayList<>();
-//		try {
-//			Connection conn = DriverManager.getConnection(url, user, pass);
-//			String sql = "SELECT id, title, description, release_year, language_id, rental_duration, ";
-//			sql += " rental_rate, length, replacement_cost, rating, special_features "
-//					+ " FROM film JOIN film_actor ON film.id = film_actor.film_id " + " WHERE actor_id = ?";
-//			PreparedStatement stmt = conn.prepareStatement(sql);
-//			stmt.setInt(1, actorId);
-//			ResultSet rs = stmt.executeQuery();
-//			while (rs.next()) {
-//				int id = rs.getInt(1);
-//				String title = rs.getString(2);
-//				String desc = rs.getString(3);
-//				Integer releaseYear = rs.getInt(4);
-//				int langId = rs.getInt(5);
-//				int rentDur = rs.getInt(6);
-//				double rate = rs.getDouble(7);
-//				Integer length = rs.getInt(8);
-//				double repCost = rs.getDouble(9);
-//				String rating = rs.getString(10);
-//				String features = rs.getString(11);
-//				List<Actor> actors = rs.getObject(12);
-//				Film film = new Film(id, title, desc, releaseYear, langId, rentDur, rate, length, repCost, rating,
-//						features, actors);
-//				films.add(film);
-//			}
-//			rs.close();
-//			stmt.close();
-//			conn.close();
-//		} catch (SQLException e) {
-//			e.printStackTrace();
-//		}
-//		return films;
-//	}
-
-
-	@Override
-	public List<Actor> findActorsByFilmId(int filmId) {
-		List<Actor> actors = new ArrayList<>();
-		try {
-			Connection conn = DriverManager.getConnection(url, user, pass);
-			String sql = "SELECT id, first_name, last_name "
-					+ " FROM film JOIN film_actor ON film.id = film_actor.film_id " + " WHERE actor_id = ?";
-			PreparedStatement stmt = conn.prepareStatement(sql);
-			stmt.setInt(1, filmId);
-			ResultSet rs = stmt.executeQuery();
-			while (rs.next()) {
-				int id = rs.getInt(1);
-				String first_name = rs.getString(2);
-				String last_name = rs.getString(3);
-
-				Actor actor = new Actor(id, first_name, last_name);
-				actors.add(actor);
-			}
-			rs.close();
-			stmt.close();
-			conn.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return actors;
-	}
 }
-
-
-
